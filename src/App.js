@@ -7,20 +7,20 @@ import useHttp from './hooks/use-http';
 function App() {
 	const [tasks, setTasks] = useState([]);
 
-	const transformTask = useCallback((tasksData) => {
-		const loadedTasks = [];
-
-		for (const taskKey in tasksData) {
-			loadedTasks.push({id: taskKey, text: tasksData[taskKey].text});
-		}
-
-		setTasks(loadedTasks);
-	}, []);
-
-	const {isLoading, error, sendRequest} = useHttp(transformTask);
+	const {isLoading, error, sendRequest} = useHttp();
 
 	useEffect(() => {
-		sendRequest({});
+		const transformTask = (tasksData) => {
+			const loadedTasks = [];
+
+			for (const taskKey in tasksData) {
+				loadedTasks.push({id: taskKey, text: tasksData[taskKey].text});
+			}
+
+			setTasks(loadedTasks);
+		};
+
+		sendRequest({}, transformTask);
 	}, [sendRequest]);
 
 	const taskAddHandler = (task) => {
